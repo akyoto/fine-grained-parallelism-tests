@@ -7,6 +7,9 @@
 using namespace std;
 using namespace boost::threadpool;
 
+// GCC
+// Remember to run this with -O3 and -march=native
+
 // Settings
 const int p = 2;
 const int num = 200000000;
@@ -119,9 +122,9 @@ int main(int argc, char *argv[]) {
 	cout << "Runtime    ST: " << mtimeST << " ms" << endl;
 	cout << endl;
 
-	cout << "Result fMT: " << fmtRes << endl;
-	cout << "Result cMT: " << res4 << endl;
-	cout << "Result cST: " << r4 << endl;
+	cout << "Result FG.MT: " << fmtRes << endl;
+	cout << "Result CG.MT: " << res4 << endl;
+	cout << "Result    ST: " << r4 << endl;
 
 	float ratio = (mtimeST / float(mtimeMT));
 	float ratioInv = (mtimeMT / float(mtimeST));

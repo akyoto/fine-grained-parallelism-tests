@@ -10,7 +10,7 @@ using namespace boost::threadpool;
 // Settings
 const int p = 2;
 const int num = 200000000;
-const int n = num / 1000; //1000000;
+const int n = num;
 const int m = num / n;
 
 //const int iter = n * m;
@@ -46,27 +46,28 @@ int main(int argc, char *argv[]) {
 
 	for(int rep = 0; rep < m; ++rep) {
 		cpu.schedule(&cpuFunc1);
-		cpu.schedule(&cpuFunc2);
+		//cpu.schedule(&cpuFunc2);
+		cpuFunc2();
 		cpu.wait();
 		res1 = sharedMem1[0] + sharedMem1[1];
 		res2 = sharedMem2[0] - sharedMem2[1];
 		res3 = sharedMem3[0] * sharedMem3[1] * sharedMem3[2];
 		cpu.schedule(&cpuFunc3);
-		cpu.schedule(&cpuFunc4);
+		//cpu.schedule(&cpuFunc4);
+		cpuFunc4();
 		cpu.wait();
 		res4 = (sharedMem4[0] + sharedMem4[1]) / 1000000;
 	}
 
 	gettimeofday(&endTime, 0);
 
-	cout << "Result fMT: " << res4 << endl;
+	int fmtRes = res4;
 
 	seconds  = endTime.tv_sec  - startTime.tv_sec;
 	useconds = endTime.tv_usec - startTime.tv_usec;
 	mtimeMT = ((seconds) * 1000 + useconds/1000.0) + 0.5;
 
 	cout << "Runtime fMT: " << mtimeMT << " ms" << endl;
-	cout << endl;
 
 	res1 = 0;
 	res2 = 0;
@@ -79,21 +80,19 @@ int main(int argc, char *argv[]) {
 	for(int rep = 0; rep < m; ++rep) {
 		cpu.schedule(&coarseFunc1);
 		cpu.schedule(&coarseFunc2);
-		cpu.schedule(&coarseFunc3);
+		//cpu.schedule(&coarseFunc3);
+		coarseFunc3();
 		cpu.wait();
 		res4 = test4(res1, res2 + res3);
 	}
 
 	gettimeofday(&endTime, 0);
 
-	cout << "Result cMT: " << res4 << endl;
-
 	seconds  = endTime.tv_sec  - startTime.tv_sec;
 	useconds = endTime.tv_usec - startTime.tv_usec;
 	mtimeCMT = ((seconds) * 1000 + useconds/1000.0) + 0.5;
 
 	cout << "Runtime cMT: " << mtimeCMT << " ms" << endl;
-	cout << endl;
 
 	// ST
 	gettimeofday(&startTime, 0);
@@ -113,23 +112,32 @@ int main(int argc, char *argv[]) {
 
 	gettimeofday(&endTime, 0);
 
-	cout << "Result cST: " << r4 << endl;
-
 	seconds  = endTime.tv_sec  - startTime.tv_sec;
 	useconds = endTime.tv_usec - startTime.tv_usec;
 	mtimeST = ((seconds) * 1000 + useconds/1000.0) + 0.5;
 
 	cout << "Runtime cST: " << mtimeST << " ms" << endl;
+	cout << endl;
+
+	cout << "Result fMT: " << fmtRes << endl;
+	cout << "Result cMT: " << res4 << endl;
+	cout << "Result cST: " << r4 << endl;
 
 	float ratio = (mtimeST / float(mtimeMT));
 	float ratioInv = (mtimeMT / float(mtimeST));
+	float ratioCG = (mtimeCMT / float(mtimeMT));
+	float ratioCGInv = (mtimeMT / float(mtimeCMT));
+
 	cout << endl;
 	cout << "N: " << n << endl;
 	cout << "M: " << m << endl;
 	cout << endl;
 	cout << "Speedup: " << ratio << " / " << p << endl;
-	cout << "MT is " << (ratio * 100 - 100) << "% faster." << endl;
-	cout << "MT needs " << (ratioInv) << " (1/" << int(ratio + 0.5f) << ") the time ST needs." << endl;
+
+	cout << "FG.MT is " << (ratioCG * 100 - 100) << "% faster than CG.MT." << endl;
+	cout << "FG.MT needs " << (ratioCGInv) << " (1/" << int(ratio + 0.5f) << ") the time CG.MT needs." << endl;
+	cout << "FG.MT is " << (ratio * 100 - 100) << "% faster than ST." << endl;
+	cout << "FG.MT needs " << (ratioInv) << " (1/" << int(ratio + 0.5f) << ") the time ST needs." << endl;
 }
 
 int test1(int a, int b) {

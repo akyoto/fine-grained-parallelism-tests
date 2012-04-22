@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 	useconds = endTime.tv_usec - startTime.tv_usec;
 	mtimeMT = ((seconds) * 1000 + useconds/1000.0) + 0.5;
 
-	cout << "Runtime fMT: " << mtimeMT << " ms" << endl;
+	cout << "Runtime FG.MT: " << mtimeMT << " ms" << endl;
 
 	res1 = 0;
 	res2 = 0;
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 	useconds = endTime.tv_usec - startTime.tv_usec;
 	mtimeCMT = ((seconds) * 1000 + useconds/1000.0) + 0.5;
 
-	cout << "Runtime cMT: " << mtimeCMT << " ms" << endl;
+	cout << "Runtime CG.MT: " << mtimeCMT << " ms" << endl;
 
 	// ST
 	gettimeofday(&startTime, 0);
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
 	useconds = endTime.tv_usec - startTime.tv_usec;
 	mtimeST = ((seconds) * 1000 + useconds/1000.0) + 0.5;
 
-	cout << "Runtime cST: " << mtimeST << " ms" << endl;
+	cout << "Runtime    ST: " << mtimeST << " ms" << endl;
 	cout << endl;
 
 	cout << "Result fMT: " << fmtRes << endl;
@@ -133,6 +133,7 @@ int main(int argc, char *argv[]) {
 	cout << "M: " << m << endl;
 	cout << endl;
 	cout << "Speedup: " << ratio << " / " << p << endl;
+	cout << endl;
 
 	cout << "FG.MT is " << (ratioCG * 100 - 100) << "% faster than CG.MT." << endl;
 	cout << "FG.MT needs " << (ratioCGInv) << " (1/" << int(ratio + 0.5f) << ") the time CG.MT needs." << endl;

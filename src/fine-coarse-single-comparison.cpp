@@ -11,9 +11,8 @@ using namespace boost::threadpool;
 // Remember to run this with -O3 and -march=native
 
 // Settings
-const int p = 2;
 const int num = 200000000;
-const int n = num;
+const int n = num / 2000;
 const int m = num / n;
 
 //const int iter = n * m;
@@ -135,7 +134,7 @@ int main(int argc, char *argv[]) {
 	cout << "N: " << n << endl;
 	cout << "M: " << m << endl;
 	cout << endl;
-	cout << "Speedup: " << ratio << " / " << p << endl;
+	cout << "Speedup: " << ratio << endl;
 	cout << endl;
 
 	cout << "FG.MT is " << (ratioCG * 100 - 100) << "% faster than CG.MT." << endl;
